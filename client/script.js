@@ -12,7 +12,7 @@ function loader(element) {
   loadInterval = setInterval(() => {
     element.textContent += ".";
 
-    if (element.textContext === ".... ") {
+    if (element.textContext === "....") {
       element.textContent = " ";
     }
   }, 300);
@@ -80,16 +80,16 @@ const handleSubmit = async (e) => {
   // fetching response ai
   const response = await fetch('http://localhost:5000', {
     method: 'POST',
-    header: {
-      'Content-Type' : 'application.json'
+    headers: {
+      'Content-Type' : 'application/json'
     },
     body : JSON.stringify({
       prompt: data.get('prompt')
     })
-  })
+  });
 
   clearInterval(loadInterval);
-  messageDiv.innerHTML = " ";
+  messageDiv.innerHTML = "";
 
   if (response.ok) {
     const data = await response.json();
@@ -98,7 +98,7 @@ const handleSubmit = async (e) => {
     typeText(messageDiv, parsedData);
   } else {
     const err = await response.text();
-    messageDiv.innerHTML = "Dimag mein kuch gush nhi raha bhai....";
+    messageDiv.innerHTML = "Something went wrong";
 
     alert(err)
   }
