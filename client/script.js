@@ -12,7 +12,7 @@ function loader(element) {
   loadInterval = setInterval(() => {
     element.textContent += ".";
 
-    if (element.textContent === ".... ") {
+    if (element.textContext === ".... ") {
       element.textContent = " ";
     }
   }, 300);
@@ -61,12 +61,13 @@ const handleSubmit = async (e) => {
   e.preventDefault();
 
   const data = new FormData(form);
-  const prompt = data.get('prompt');
 
+  // users chat
   chatContainer.innerHTML += chatStrip(false, data.get("prompt"));
 
   form.reset();
 
+  // bot's chat
   const uniqueId = generateId();
   chatContainer.innerHTML += chatStrip(true, " ", uniqueId);
 
@@ -75,28 +76,32 @@ const handleSubmit = async (e) => {
   const messageDiv = document.getElementById(uniqueId);
 
   loader(messageDiv);
-  let botResponse = "I'm sorry, I didn't understand your question.";
+  
+  // fetching response ai
+  const response = await fetch('http://localhost:5000', {
+    method: 'POST',
+    header: {
+      'Content-Type' : 'application.json'
+    },
+    body : JSON.stringify({
+      prompt: data.get('prompt')
+    })
+  })
 
-  if (prompt.includes('hello') || prompt.includes('hi')) {
-    botResponse = 'Hi there!';
-  } else if (prompt.includes('tera baap kon hain?')) {
-    botResponse = "Mere 7 baap hain :- Gagan, Surya, Grenish, Naveen, Anish, Junnu, Aryan.";
-  } else if (prompt.includes('how are you')) {
-    botResponse = "I'm doing well, thank you!";
-  } else if (prompt.includes('what is your name?') || prompt.includes('tera naam kya hain?')){
-    botResponse = "My name is Aayu Ai (oiginated from Aayush Baral).";
+  clearInterval(loadInterval);
+  messageDiv.innerHTML = " ";
+
+  if (response.ok) {
+    const data = await response.json();
+    const parsedData = data.bot.trim();
+
+    typeText(messageDiv, parsedData);
   } else {
-    botResponse = "I'm sorry, I didn't understand your question.";
-  }
+    const err = await response.text();
+    messageDiv.innerHTML = "Dimag mein kuch gush nhi raha bhai....";
 
-  // Simulate delay before showing bot's response
-  setTimeout(() => {
-    messageDiv.textContent = botResponse;
-    setTimeout(() => {
-      typeText(botResponse);
-    }, 3000);
-    clearInterval(loadInterval);
-  }, 2000);
+    alert(err)
+  }
 };
 
 form.addEventListener("submit", handleSubmit);
