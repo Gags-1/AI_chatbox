@@ -4,10 +4,22 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
+    <title>Aayu Ai</title>
+    <link rel="shortcut icon" href="public/favicon-ai.png" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <div id="app"></div>
-    <script type="module" src="/main.js"></script>
+    <div id="app">
+      <div id="chat-container"></div>
+
+      <form>
+        <textarea name="prompt" id="textbox" cols="1" rows="1" placeholder="Ask me anything...."></textarea>
+        <button type="submit">
+          <img src="assets/send.svg">
+        </button>
+      </form>
+    </div>
+    <script type="module" src="script.js"></script>
+    <script src="textScript.js"></script>
   </body>
 </html>
